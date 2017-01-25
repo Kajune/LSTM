@@ -1,9 +1,9 @@
 #include "LSTM.hpp"
 
 int main() {
-	LSTM::Node<2, 3> n1;
+	LSTM::Node<2, 2> n1, n2;
 
-	n1.Forward({ 1, 2, 3 });
+	n2.Forward(n1.Forward({ 1, 2, 3 }));
 
 	return 0;
 }

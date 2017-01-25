@@ -72,6 +72,10 @@ namespace LSTM {
 
 			return m_lastOutput;
 		}
+
+		const Vector<Input, DataType>& Backward(const Vector<Output, DataType>& output) {
+			
+		}
 	};
 
 }
