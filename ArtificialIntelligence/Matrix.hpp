@@ -111,9 +111,7 @@ namespace LSTM {
 		Vector<Column, DataType> operator*(const Vector<Row, DataType>& rhs) const {
 			Vector<Column, DataType> temp;
 			for (std::size_t i = 0; i < Column; i++) {
-				for (std::size_t j = 0; j < Row; j++) {
-					temp.at(i) += at(i, j) * rhs.at(j);
-				}
+				temp.at(i) = DotProduct(at(i), rhs);
 			}
 			return temp;
 		}
@@ -136,18 +134,46 @@ namespace LSTM {
 		DataType at(std::size_t column, std::size_t row) const {
 			return m_data.at(column).at(row);
 		}
+		Vector<Row, DataType>& at(std::size_t column) {
+			return m_data.at(column);
+		}
+		Vector<Row, DataType> at(std::size_t column) const {
+			return m_data.at(column);
+		}
 		Matrix& fill(DataType value) {
 			std::for_each(m_data.begin(), m_data.end(), [&](auto& x) {x.fill(value); });
 			return *this;
 		}
 		template <typename Functor>
-		Matrix& transform(Functor func) {
+		Matrix transform(Functor func) const {
+			Matrix temp;
 			for (std::size_t i = 0; i < Column; i++) {
-				m_data.at(i).transform(func);
+				temp.m_data.at(i).transform(func);
 			}
-			return *this;
+			return temp;
 		}
 	};
+
+	template <std::size_t Column, std::size_t Row, typename DataType>
+	Matrix<Column, Row, DataType> DirectProduct
+	(const Vector<Column, DataType>& lhs, const Vector<Row, DataType>& rhs) {
+		Matrix<Column, Row, DataType> temp;
+		for (std::size_t i = 0; i < Column; i++) {
+			temp.at(i) = lhs.at(i) * rhs;
+		}
+		return temp;
+	}
+
+	template <std::size_t Column, std::size_t Row, typename DataType>
+	Matrix<Row, Column, DataType> Transpose(const Matrix<Column, Row, DataType>& rhs) {
+		Matrix<Row, Column, DataType> temp;
+		for (std::size_t i = 0; i < Column; i++) {
+			for (std::size_t j = 0; j < Row; j++) {
+				temp.at(j, i) = rhs.at(i, j);
+			}
+		}
+		return temp;
+	}
 
 }
 

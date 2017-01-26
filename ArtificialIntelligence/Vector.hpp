@@ -85,6 +85,9 @@ namespace LSTM {
 			temp *= rhs;
 			return temp;
 		}
+		friend Vector operator*(DataType lhs, Vector rhs) {
+			return rhs * lhs;
+		}
 
 		//operator/, /=
 		Vector& operator/=(DataType rhs) {
@@ -111,11 +114,12 @@ namespace LSTM {
 			return *this;
 		}
 		template <typename Functor>
-		Vector& transform(Functor func) {
+		Vector transform(Functor func) const {
+			Vector temp;
 			for (std::size_t i = 0; i < Size; i++) {
-				m_data.at(i) = func(m_data.at(i));
+				temp.m_data.at(i) = func(m_data.at(i));
 			}
-			return *this;
+			return temp;
 		}
 	};
 
@@ -129,12 +133,22 @@ namespace LSTM {
 		return sum;
 	}
 
-	//direct product
+	//hadamard product
 	template <std::size_t Size, typename DataType>
-	Vector<Size, DataType> DirectProduct(const Vector<Size, DataType>& lhs, const Vector<Size, DataType>& rhs) {
+	Vector<Size, DataType> HadamardProduct(const Vector<Size, DataType>& lhs, const Vector<Size, DataType>& rhs) {
 		Vector<Size, DataType> temp;
 		for (std::size_t i = 0; i < Size; i++) {
 			temp.at(i) = lhs.at(i) * rhs.at(i);
+		}
+		return temp;
+	}
+
+	//hadamard quotient
+	template <std::size_t Size, typename DataType>
+	Vector<Size, DataType> HadamardQuotient(const Vector<Size, DataType>& lhs, const Vector<Size, DataType>& rhs) {
+		Vector<Size, DataType> temp;
+		for (std::size_t i = 0; i < Size; i++) {
+			temp.at(i) = lhs.at(i) / rhs.at(i);
 		}
 		return temp;
 	}
